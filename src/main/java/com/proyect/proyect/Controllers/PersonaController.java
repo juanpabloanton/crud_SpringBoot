@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.catalina.connector.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +22,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
-@RequestMapping(path = "api/v1/persona")
+@RequestMapping(path = "api/v1/alumno")
 public class PersonaController {
     private final PersonaServices personaServices;
+    private static final Logger logger = LoggerFactory.getLogger(PersonaController.class);
 
     @Autowired
     public PersonaController(PersonaServices personaServices) {

@@ -8,10 +8,14 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.apache.catalina.connector.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.proyect.proyect.Controllers.MateriaController;
+import com.proyect.proyect.Interface.MateriaInterface;
 import com.proyect.proyect.Interface.PersonaInterface;
 import com.proyect.proyect.Models.Persona;
 import com.proyect.proyect.Models.PersonaMateria;
@@ -20,9 +24,11 @@ import com.proyect.proyect.Models.PersonaMateria;
 public class PersonaServices {
     HashMap<String, Object> datos = new HashMap<>();
     private final PersonaInterface personainterface;
+    private static final Logger logger = LoggerFactory.getLogger(PersonaServices.class);
 
     public PersonaServices(PersonaInterface personainterface) {
         this.personainterface = personainterface;
+
     }
 
     public List<Persona> getnombres() {
@@ -33,7 +39,7 @@ public class PersonaServices {
         return this.personainterface.getPersonaMaterias();
     }
 
-      public List<Map<String, Object>> obtenerPersonaMaterias() {
+    public List<Map<String, Object>> obtenerPersonaMaterias() {
         List<Object[]> results = personainterface.getPersonaMaterias();
         List<Map<String, Object>> personas = new ArrayList<>();
 
@@ -44,6 +50,7 @@ public class PersonaServices {
             persona.put("materiasAsignadas", result[2]);
             persona.put("edad", result[3]);
             persona.put("direccion", result[4]);
+            persona.put("matricula", result[5]);
             personas.add(persona);
         }
 
@@ -54,21 +61,29 @@ public class PersonaServices {
         Optional<Persona> res = personainterface.findPersonaBynombre(persona.getNombre());
         datos = new HashMap<>();
 
-        if (res.isPresent() && persona.getId_persona() == 0) {
-            datos.put("error", true);
-            datos.put("Message", "Ya existe el nombre en la base de datos");
-            // throw new IllegalStateException("ya existe la persona");
-            return new ResponseEntity<>(datos, HttpStatus.CONFLICT);
-        }
-        datos.put("Message", "creado con exito");
-        if (persona.getId_persona() != 0) {
-            datos.put("Message", "Se actualizo con exito");
-        }
-        personainterface.save(persona);
-        datos.put("data", persona);
+        logger.info("Mensaje de información");
+        logger.info(persona.toString());
         return new ResponseEntity<>(
-                datos,
+                persona.toString(),
                 HttpStatus.CREATED);
+
+        /*
+         * if (res.isPresent() && persona.getId_persona() == 0) {
+         * datos.put("error", true);
+         * datos.put("Message", "Ya existe el nombre en la base de datos");
+         * // throw new IllegalStateException("ya existe la persona");
+         * return new ResponseEntity<>(datos, HttpStatus.CONFLICT);
+         * }
+         * datos.put("Message", "creado con exito");
+         * if (persona.getId_persona() != 0) {
+         * datos.put("Message", "Se actualizo con exito");
+         * }
+         * personainterface.save(persona);
+         * datos.put("data", persona);
+         * return new ResponseEntity<>(
+         * datos,
+         * HttpStatus.CREATED);
+         */
     }
 
     public ResponseEntity<Object> deletepersona(Long id) {

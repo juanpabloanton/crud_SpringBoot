@@ -18,14 +18,13 @@ public interface PersonaInterface extends JpaRepository<Persona, Long> {
             "persona.nombre AS nombre_persona, " +
             "STRING_AGG(materia.descripcion, ', ') AS materias_asignadas, " +
             "persona.edad, " +
-            "persona.direccion " +
+            "persona.direccion, " +
+            "persona.matricula " +
             "FROM Persona persona " +
             "INNER JOIN persona.personaMaterias pm " +
             "INNER JOIN pm.materia materia " +
             "GROUP BY persona.id_persona, persona.nombre, persona.edad, persona.direccion " +
             "ORDER BY persona.id_persona ASC")
-    List<Object[
-        
-    ]> getPersonaMaterias();
+    List<Object[]> getPersonaMaterias();
 
 }
