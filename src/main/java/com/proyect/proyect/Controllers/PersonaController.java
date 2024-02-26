@@ -1,9 +1,11 @@
 package com.proyect.proyect.Controllers;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,8 +30,9 @@ public class PersonaController {
     }
 
     @GetMapping
-    public List<Persona> listado() {
-        return this.personaServices.getnombres();
+    public ResponseEntity<List<Map<String, Object>>> obtenerPersonaMaterias() {
+        List<Map<String, Object>> personas = personaServices.obtenerPersonaMaterias();
+        return new ResponseEntity<>(personas, HttpStatus.OK);
     }
 
     @PostMapping("/store")

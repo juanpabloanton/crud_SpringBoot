@@ -1,16 +1,20 @@
 package com.proyect.proyect.Models;
 
-import org.springframework.context.annotation.Primary;
+import java.util.HashSet;
+import java.util.Set;
 
+import org.springframework.context.annotation.Primary;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table
+@Table(name = "persona")
 
 public class Persona {
     @Id
@@ -22,26 +26,37 @@ public class Persona {
 
     private String direccion;
 
+    private String matricula;
+
     private Integer edad;
 
     private String estado;
 
-    public Persona(long id_persona, String nombre, String direccion, Integer edad, String estado) {
+    @OneToMany(mappedBy = "persona", cascade = CascadeType.ALL)
+    private Set<PersonaMateria> personaMaterias = new HashSet<>();
+
+    public Persona() {
+    }
+
+    public Persona(String nombre, String direccion, String matricula, Integer edad, String estado,
+            Set<PersonaMateria> personaMaterias) {
+        this.nombre = nombre;
+        this.direccion = direccion;
+        this.matricula = matricula;
+        this.edad = edad;
+        this.estado = estado;
+        this.personaMaterias = personaMaterias;
+    }
+
+    public Persona(long id_persona, String nombre, String direccion, String matricula, Integer edad, String estado,
+            Set<PersonaMateria> personaMaterias) {
         this.id_persona = id_persona;
         this.nombre = nombre;
         this.direccion = direccion;
+        this.matricula = matricula;
         this.edad = edad;
         this.estado = estado;
-    }
-
-    public Persona(String nombre, String direccion, Integer edad, String estado) {
-        this.nombre = nombre;
-        this.direccion = direccion;
-        this.edad = edad;
-        this.estado = estado;
-    }
-
-    public Persona() {
+        this.personaMaterias = personaMaterias;
     }
 
     public long getId_persona() {
@@ -68,6 +83,14 @@ public class Persona {
         this.direccion = direccion;
     }
 
+    public String getMatricula() {
+        return matricula;
+    }
+
+    public void setMatricula(String matricula) {
+        this.matricula = matricula;
+    }
+
     public Integer getEdad() {
         return edad;
     }
@@ -82,6 +105,14 @@ public class Persona {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public Set<PersonaMateria> getPersonaMaterias() {
+        return personaMaterias;
+    }
+
+    public void setPersonaMaterias(Set<PersonaMateria> personaMaterias) {
+        this.personaMaterias = personaMaterias;
     }
 
 }
