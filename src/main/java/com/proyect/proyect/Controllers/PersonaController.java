@@ -13,9 +13,12 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.proyect.proyect.Models.Persona;
+import com.proyect.proyect.Models.PersonaMateria;
+import com.proyect.proyect.ModelsRequest.PersonaRequest;
 import com.proyect.proyect.Services.PersonaServices;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -39,16 +42,16 @@ public class PersonaController {
     }
 
     @PostMapping("/store")
-    public ResponseEntity<Object> store(@RequestBody Persona persona) {
-
-        return this.personaServices.storepersona(persona);
+    public ResponseEntity<Object> store(@RequestBody PersonaRequest personaRequest) {
+        return this.personaServices.storePersonaConMaterias(personaRequest);
     }
-
-    @PutMapping("/update")
-    public ResponseEntity<Object> update(@RequestBody Persona persona) {
-
-        return this.personaServices.storepersona(persona);
-    }
+    /*
+     * @PutMapping("/update")
+     * public ResponseEntity<Object> update(@RequestBody Persona persona) {
+     * 
+     * return this.personaServices.storepersona(persona);
+     * }
+     */
 
     @DeleteMapping(path = "delete/{id_persona}")
     public ResponseEntity<Object> eliminar(@PathVariable("id_persona") long id) {

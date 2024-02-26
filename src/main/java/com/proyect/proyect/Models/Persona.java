@@ -27,6 +27,7 @@ public class Persona {
     private String direccion;
 
     private String matricula;
+    private String telefono;
 
     private Integer edad;
 
@@ -38,22 +39,36 @@ public class Persona {
     public Persona() {
     }
 
-    public Persona(String nombre, String direccion, String matricula, Integer edad, String estado,
-            Set<PersonaMateria> personaMaterias) {
+    @Override
+    public String toString() {
+        return "Persona{" +
+                "id_persona=" + id_persona +
+                ", nombre='" + nombre + '\'' +
+                ", direccion='" + direccion + '\'' +
+                ", telefono='" + telefono + '\'' +
+                ", matricula='" + matricula + '\'' +
+                ", edad='" + edad + '\'' +
+                '}';
+    }
+
+    public Persona(long id_persona, String nombre, String direccion, String matricula, String telefono, Integer edad,
+            String estado, Set<PersonaMateria> personaMaterias) {
+        this.id_persona = id_persona;
         this.nombre = nombre;
         this.direccion = direccion;
         this.matricula = matricula;
+        this.telefono = telefono;
         this.edad = edad;
         this.estado = estado;
         this.personaMaterias = personaMaterias;
     }
 
-    public Persona(long id_persona, String nombre, String direccion, String matricula, Integer edad, String estado,
+    public Persona(String nombre, String direccion, String matricula, String telefono, Integer edad, String estado,
             Set<PersonaMateria> personaMaterias) {
-        this.id_persona = id_persona;
         this.nombre = nombre;
         this.direccion = direccion;
         this.matricula = matricula;
+        this.telefono = telefono;
         this.edad = edad;
         this.estado = estado;
         this.personaMaterias = personaMaterias;
@@ -113,6 +128,14 @@ public class Persona {
 
     public void setPersonaMaterias(Set<PersonaMateria> personaMaterias) {
         this.personaMaterias = personaMaterias;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
     }
 
 }

@@ -2,6 +2,7 @@ package com.proyect.proyect.Services;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -17,18 +18,23 @@ import org.springframework.stereotype.Service;
 import com.proyect.proyect.Controllers.MateriaController;
 import com.proyect.proyect.Interface.MateriaInterface;
 import com.proyect.proyect.Interface.PersonaInterface;
+import com.proyect.proyect.Interface.PersonaMateriaInterface;
+import com.proyect.proyect.Models.Materia;
 import com.proyect.proyect.Models.Persona;
 import com.proyect.proyect.Models.PersonaMateria;
+import com.proyect.proyect.ModelsRequest.PersonaRequest;
 
 @Service
 public class PersonaServices {
     HashMap<String, Object> datos = new HashMap<>();
     private final PersonaInterface personainterface;
+    private final PersonaMateriaInterface personamateriainterface;
     private static final Logger logger = LoggerFactory.getLogger(PersonaServices.class);
 
-    public PersonaServices(PersonaInterface personainterface) {
-        this.personainterface = personainterface;
 
+    public PersonaServices(PersonaInterface personainterface, PersonaMateriaInterface personamateriainterface) {
+        this.personainterface = personainterface;
+        this.personamateriainterface = personamateriainterface;
     }
 
     public List<Persona> getnombres() {
@@ -51,39 +57,55 @@ public class PersonaServices {
             persona.put("edad", result[3]);
             persona.put("direccion", result[4]);
             persona.put("matricula", result[5]);
+            persona.put("telefono", result[6]);
             personas.add(persona);
         }
 
         return personas;
     }
 
-    public ResponseEntity<Object> storepersona(Persona persona) {
+    public ResponseEntity<Object> storePersonaConMaterias(PersonaRequest personaRequest) {
+
+        Persona persona = new Persona();
+        persona.setDireccion(personaRequest.getDireccion());
+        persona.setNombre(personaRequest.getNombre());
+        persona.setMatricula(personaRequest.getMatricula());
+        persona.setEdad(personaRequest.getEdad());
+        persona.setTelefono(personaRequest.getTelefono());
         Optional<Persona> res = personainterface.findPersonaBynombre(persona.getNombre());
         datos = new HashMap<>();
 
         logger.info("Mensaje de información");
         logger.info(persona.toString());
+
+        if (res.isPresent() && persona.getId_persona() == 0) {
+            datos.put("error", true);
+            datos.put("Message", "Ya existe el nombre en la base de datos");
+            // throw new IllegalStateException("ya existe la persona");
+            return new ResponseEntity<>(datos, HttpStatus.CONFLICT);
+        }
+        datos.put("Message", "creado con exito");
+        if (persona.getId_persona() != 0) {
+            datos.put("Message", "Se actualizo con exito");
+        }
+        personainterface.save(persona);
+        datos.put("persona", persona);
+
+        Set<PersonaMateria> personaMaterias = new HashSet<>();
+        for (Long idMateria : personaRequest.getId_materia()) {
+            Materia materia = new Materia();
+            materia.setId_materia(idMateria);
+            PersonaMateria personaMateria = new PersonaMateria(persona, materia);
+            personaMaterias.add(personaMateria);
+        }
+        
+        personamateriainterface.saveAll(personaMaterias);
+        datos.put("persona_materia", personaMaterias);
+
         return new ResponseEntity<>(
-                persona.toString(),
+                datos,
                 HttpStatus.CREATED);
 
-        /*
-         * if (res.isPresent() && persona.getId_persona() == 0) {
-         * datos.put("error", true);
-         * datos.put("Message", "Ya existe el nombre en la base de datos");
-         * // throw new IllegalStateException("ya existe la persona");
-         * return new ResponseEntity<>(datos, HttpStatus.CONFLICT);
-         * }
-         * datos.put("Message", "creado con exito");
-         * if (persona.getId_persona() != 0) {
-         * datos.put("Message", "Se actualizo con exito");
-         * }
-         * personainterface.save(persona);
-         * datos.put("data", persona);
-         * return new ResponseEntity<>(
-         * datos,
-         * HttpStatus.CREATED);
-         */
     }
 
     public ResponseEntity<Object> deletepersona(Long id) {

@@ -19,7 +19,8 @@ public interface PersonaInterface extends JpaRepository<Persona, Long> {
             "STRING_AGG(materia.descripcion, ', ') AS materias_asignadas, " +
             "persona.edad, " +
             "persona.direccion, " +
-            "persona.matricula " +
+            "persona.matricula, " +
+            "persona.telefono " +
             "FROM Persona persona " +
             "INNER JOIN persona.personaMaterias pm " +
             "INNER JOIN pm.materia materia " +
